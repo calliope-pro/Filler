@@ -20,7 +20,7 @@ Fillr is a browser-based dummy file generation service that creates files of exa
 ## 🚀 Quick Start
 
 ### Online Use
-Visit [fillr.app](https://fillr.app/) and start generating files immediately.
+Visit [filler.netlify.app](https://filler.netlify.app/) and start generating files immediately.
 
 ### Local Development
 ```bash
@@ -108,7 +108,9 @@ We welcome contributions! Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for gu
 
 ## 📄 License
 
-This project is licensed under the **BSD 3-Clause License** - see the [LICENSE](./LICENSE) file for details.
+Copyright 2025-present, calliope-pro (https://github.com/calliope-pro)
+
+This project is licensed under the **Apache License 2.0** - see the [LICENSE](./LICENSE) file for details.
 
 ### License Summary
 
@@ -116,7 +118,9 @@ This project is licensed under the **BSD 3-Clause License** - see the [LICENSE](
 - ✅ Modification
 - ✅ Distribution
 - ✅ Private use
+- ✅ Patent use
 - ❗ License and copyright notice required
+- ❗ State changes if modified
 
 ## 🙏 Acknowledgments
 

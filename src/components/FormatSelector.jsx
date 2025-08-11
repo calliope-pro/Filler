@@ -1,4 +1,3 @@
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 const SUPPORTED_FORMATS = ['txt', 'csv', 'png', 'pdf', 'mp3', 'mp4'];

@@ -1,10 +1,32 @@
 {
   "name": "fillr",
-  "private": true,
+  "private": false,
   "version": "0.1.0",
   "type": "module",
-  "license": "BSD-3-Clause",
+  "license": "Apache-2.0",
   "description": "Client-side dummy file generator - Create files of exact size in any format",
+  "keywords": [
+    "dummy-file",
+    "test-file",
+    "file-generator",
+    "development-tool",
+    "exact-size",
+    "browser",
+    "client-side",
+    "testing"
+  ],
+  "homepage": "https://filler.netlify.app",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/calliope-pro/Filler.git"
+  },
+  "bugs": {
+    "url": "https://github.com/calliope-pro/Filler/issues"
+  },
+  "author": {
+    "name": "calliope-pro",
+    "url": "https://github.com/calliope-pro"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
