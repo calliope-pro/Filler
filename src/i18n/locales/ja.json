@@ -1,0 +1,84 @@
+{
+  "app": {
+    "title": "Fillr",
+    "tagline": "必要なサイズのファイルを、必要なだけ",
+    "description": "クライアントサイド完結のダミーファイル生成サービス"
+  },
+  "form": {
+    "fileSize": "ファイルサイズ",
+    "sizePlaceholder": "サイズを入力",
+    "fileFormat": "ファイル形式",
+    "generateButton": "ファイル生成",
+    "generating": "生成中...",
+    "willGenerate": "{{size}} バイトの {{format}} ファイルを生成します",
+    "maxSize": "最大サイズ: 10 GiB ({{bytes}} バイト)"
+  },
+  "formats": {
+    "txt": {
+      "label": "テキスト (.txt)",
+      "description": "プレーンテキストファイル"
+    },
+    "csv": {
+      "label": "CSV表 (.csv)",
+      "description": "カンマ区切り値ファイル"
+    },
+    "png": {
+      "label": "PNG画像 (.png)",
+      "description": "1x1透明画像（標準ビューワ対応）"
+    },
+    "pdf": {
+      "label": "PDF文書 (.pdf)",
+      "description": "PDF文書ファイル（調整あり）"
+    },
+    "mp3": {
+      "label": "MP3音声 (.mp3)",
+      "description": "無音音声ファイル（標準プレイヤー対応）"
+    },
+    "mp4": {
+      "label": "MP4動画 (.mp4)",
+      "description": "1x1黒画面動画（標準プレイヤー対応）"
+    }
+  },
+  "algorithm": {
+    "title": "生成方法",
+    "description": "TXT・CSV: ゼロ埋め / PNG: 1x1透明画像 / PDF: コメント調整 / MP3: 無音データ / MP4: 黒画面動画"
+  },
+  "progress": {
+    "generating": "ファイル生成中...",
+    "completed": "{{percent}}% 完了",
+    "cancel": "キャンセル",
+    "estimatedTime": "推定残り時間: {{time}}"
+  },
+  "features": {
+    "exactSize": {
+      "title": "正確なサイズ",
+      "description": "指定したバイト数ぴったりのファイルを生成します"
+    },
+    "private": {
+      "title": "プライベート",
+      "description": "すべての処理がブラウザ内で完結、サーバーに送信されません"
+    },
+    "fast": {
+      "title": "高速",
+      "description": "メモリ効率的なチャンク生成で大容量ファイルも高速処理"
+    },
+    "formats": {
+      "title": "対応形式",
+      "description": "TXT, CSV, PNG, PDF, MP3, MP4に対応"
+    }
+  },
+  "footer": {
+    "purpose": "開発・テスト用途のダミーファイル生成に最適"
+  },
+  "errors": {
+    "sizeZero": "ファイルサイズは0より大きい値を指定してください",
+    "sizeTooLarge": "ファイルサイズは10GiB以下に制限されています",
+    "generationFailed": "ファイル生成中にエラーが発生しました",
+    "invalidSize": "無効なサイズ値です",
+    "unsupportedFormat": "サポートされていない形式です: {{format}}"
+  },
+  "time": {
+    "lessThanSecond": "1秒未満",
+    "seconds": "{{count}}秒"
+  }
+}

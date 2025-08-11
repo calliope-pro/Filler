@@ -1,0 +1,84 @@
+{
+  "app": {
+    "title": "Fillr",
+    "tagline": "Create files of exact size, as needed",
+    "description": "Client-side dummy file generation service"
+  },
+  "form": {
+    "fileSize": "File Size",
+    "sizePlaceholder": "Enter size",
+    "fileFormat": "File Format",
+    "generateButton": "Generate File",
+    "generating": "Generating...",
+    "willGenerate": "Will generate {{size}} bytes {{format}} file",
+    "maxSize": "Maximum size: 10 GiB ({{bytes}} bytes)"
+  },
+  "formats": {
+    "txt": {
+      "label": "Text (.txt)",
+      "description": "Plain text file"
+    },
+    "csv": {
+      "label": "CSV Table (.csv)",
+      "description": "Comma-separated values file"
+    },
+    "png": {
+      "label": "PNG Image (.png)",
+      "description": "1x1 transparent image (standard viewer compatible)"
+    },
+    "pdf": {
+      "label": "PDF Document (.pdf)",
+      "description": "PDF document file (size adjusted)"
+    },
+    "mp3": {
+      "label": "MP3 Audio (.mp3)",
+      "description": "Silent audio file (standard player compatible)"
+    },
+    "mp4": {
+      "label": "MP4 Video (.mp4)",
+      "description": "1x1 black screen video (standard player compatible)"
+    }
+  },
+  "algorithm": {
+    "title": "Generation Method",
+    "description": "TXT/CSV: Zero-filled / PNG: 1x1 transparent / PDF: Comment padding / MP3: Silent audio / MP4: Black screen video"
+  },
+  "progress": {
+    "generating": "Generating file...",
+    "completed": "{{percent}}% complete",
+    "cancel": "Cancel",
+    "estimatedTime": "Estimated time remaining: {{time}}"
+  },
+  "features": {
+    "exactSize": {
+      "title": "Exact Size",
+      "description": "Generates files with exactly the specified byte count"
+    },
+    "private": {
+      "title": "Private",
+      "description": "All processing is done in the browser, nothing sent to servers"
+    },
+    "fast": {
+      "title": "Fast",
+      "description": "Memory-efficient chunked generation handles large files quickly"
+    },
+    "formats": {
+      "title": "Format Support",
+      "description": "Supports TXT, CSV, PNG, PDF, MP3, MP4 formats"
+    }
+  },
+  "footer": {
+    "purpose": "Perfect for development and testing dummy file generation"
+  },
+  "errors": {
+    "sizeZero": "File size must be greater than 0",
+    "sizeTooLarge": "File size is limited to 10 GiB",
+    "generationFailed": "An error occurred during file generation",
+    "invalidSize": "Invalid size value",
+    "unsupportedFormat": "Unsupported format: {{format}}"
+  },
+  "time": {
+    "lessThanSecond": "less than 1 second",
+    "seconds": "{{count}} seconds"
+  }
+}
