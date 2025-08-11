@@ -5,7 +5,70 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
-    <!-- Primary Meta Tags -->
+    <!-- Language Detection Script -->
+    <script>
+      (function() {
+        const lang = navigator.language || navigator.userLanguage || 'ja';
+        const isEnglish = lang.toLowerCase().startsWith('en');
+        document.documentElement.lang = isEnglish ? 'en' : 'ja';
+        
+        // SEO Meta Tags
+        const seoData = {
+          ja: {
+            title: "📁 Fillr | 指定バイト数のダミーファイル生成ツール",
+            description: "ブラウザで動作するダミーファイル生成サービス。指定したバイト数ぴったりのファイルを瞬時に作成・ダウンロード。TXT、PNG、PDF、MP3、MP4対応。開発・テスト用途に最適。",
+            keywords: "ダミーファイル,テストファイル,ファイル生成,バイト数指定,開発ツール,テストデータ,パフォーマンステスト,ファイルサイズ",
+            locale: "ja_JP"
+          },
+          en: {
+            title: "📁 Fillr | Exact Size Dummy File Generator",
+            description: "Client-side dummy file generation service. Create and download files of exact byte sizes instantly. Supports TXT, PNG, PDF, MP3, MP4 formats. Perfect for development and testing.",
+            keywords: "dummy file,test file,file generation,exact byte size,development tool,test data,performance testing,file size",
+            locale: "en_US"
+          }
+        };
+        
+        const currentLang = isEnglish ? 'en' : 'ja';
+        const data = seoData[currentLang];
+        
+        // Set title
+        document.title = data.title;
+        
+        // Create and set meta tags
+        const createMeta = (name, content, property = false) => {
+          const meta = document.createElement('meta');
+          if (property) {
+            meta.setAttribute('property', name);
+          } else {
+            meta.setAttribute('name', name);
+          }
+          meta.setAttribute('content', content);
+          return meta;
+        };
+        
+        // Wait for DOM to be ready
+        document.addEventListener('DOMContentLoaded', () => {
+          const head = document.head;
+          
+          // Update existing meta tags
+          const updateMeta = (selector, content) => {
+            const meta = document.querySelector(selector);
+            if (meta) meta.setAttribute('content', content);
+          };
+          
+          updateMeta('meta[name="title"]', data.title);
+          updateMeta('meta[name="description"]', data.description);
+          updateMeta('meta[name="keywords"]', data.keywords);
+          updateMeta('meta[property="og:title"]', data.title);
+          updateMeta('meta[property="og:description"]', data.description);
+          updateMeta('meta[property="og:locale"]', data.locale);
+          updateMeta('meta[property="twitter:title"]', data.title);
+          updateMeta('meta[property="twitter:description"]', data.description);
+        });
+      })();
+    </script>
+    
+    <!-- Primary Meta Tags (will be updated by script) -->
     <title>📁 Fillr | 指定バイト数のダミーファイル生成ツール</title>
     <meta name="title" content="📁 Fillr | 指定バイト数のダミーファイル生成ツール" />
     <meta name="description" content="ブラウザで動作するダミーファイル生成サービス。指定したバイト数ぴったりのファイルを瞬時に作成・ダウンロード。TXT、PNG、PDF、MP3、MP4対応。開発・テスト用途に最適。" />
@@ -14,21 +77,30 @@
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://fillr.app/" />
     
-    <!-- Open Graph / Facebook -->
+    <!-- Alternate language versions -->
+    <link rel="alternate" hreflang="ja" href="https://fillr.app/" />
+    <link rel="alternate" hreflang="en" href="https://fillr.app/" />
+    <link rel="alternate" hreflang="x-default" href="https://fillr.app/" />
+    
+    <!-- Copyright and License -->
+    <meta name="copyright" content="© 2025-present calliope-pro. Licensed under BSD 3-Clause." />
+    <link rel="license" href="https://github.com/calliope-pro/Filler" />
+    
+    <!-- Open Graph / Facebook (will be updated by script) -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://fillr.app/" />
     <meta property="og:title" content="📁 Fillr | 指定バイト数のダミーファイル生成ツール" />
     <meta property="og:description" content="ブラウザで動作するダミーファイル生成サービス。指定したバイト数ぴったりのファイルを瞬時に作成・ダウンロード。" />
     <meta property="og:locale" content="ja_JP" />
     
-    <!-- Twitter -->
+    <!-- Twitter (will be updated by script) -->
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content="https://fillr.app/" />
     <meta property="twitter:title" content="📁 Fillr | 指定バイト数のダミーファイル生成ツール" />
     <meta property="twitter:description" content="ブラウザで動作するダミーファイル生成サービス。指定したバイト数ぴったりのファイルを瞬時に作成・ダウンロード。" />
     
-    <!-- Structured Data -->
-    <script type="application/ld+json">
+    <!-- Structured Data (will be updated by script) -->
+    <script type="application/ld+json" id="structured-data">
     {
       "@context": "https://schema.org",
       "@type": "WebApplication",
@@ -37,7 +109,7 @@
       "url": "https://fillr.app/",
       "applicationCategory": "DeveloperApplication",
       "genre": "Development Tool",
-      "inLanguage": "ja",
+      "inLanguage": ["ja", "en"],
       "operatingSystem": "Web Browser",
       "browserRequirements": "Requires JavaScript, Modern Browser",
       "offers": {
@@ -56,8 +128,63 @@
         "@type": "Thing",
         "name": "ダミーファイル生成",
         "description": "開発・テスト用途のためのファイル生成ツール"
+      },
+      "codeRepository": "https://github.com/calliope-pro/Filler",
+      "license": "BSD-3-Clause",
+      "creator": {
+        "@type": "Person",
+        "name": "calliope-pro"
       }
     }
+    </script>
+    
+    <!-- Update structured data based on language -->
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const lang = document.documentElement.lang;
+        const structuredDataEl = document.getElementById('structured-data');
+        
+        const structuredDataLang = {
+          ja: {
+            description: "ブラウザで動作するダミーファイル生成サービス。指定したバイト数ぴったりのファイルを瞬時に作成・ダウンロード。",
+            featureList: [
+              "指定バイト数でのファイル生成",
+              "複数フォーマット対応（TXT、PNG、PDF、MP3、MP4）",
+              "クライアントサイド完結",
+              "大容量ファイル対応",
+              "プログレス表示"
+            ],
+            aboutName: "ダミーファイル生成",
+            aboutDescription: "開発・テスト用途のためのファイル生成ツール"
+          },
+          en: {
+            description: "Client-side dummy file generation service. Create and download files of exact byte sizes instantly.",
+            featureList: [
+              "Exact byte size file generation",
+              "Multiple format support (TXT, PNG, PDF, MP3, MP4)",
+              "Client-side processing",
+              "Large file support",
+              "Progress display"
+            ],
+            aboutName: "Dummy File Generation",
+            aboutDescription: "File generation tool for development and testing purposes"
+          }
+        };
+        
+        const currentLang = lang === 'en' ? 'en' : 'ja';
+        const data = structuredDataLang[currentLang];
+        
+        if (structuredDataEl) {
+          const jsonData = JSON.parse(structuredDataEl.textContent);
+          jsonData.description = data.description;
+          jsonData.featureList = data.featureList;
+          jsonData.about.name = data.aboutName;
+          jsonData.about.description = data.aboutDescription;
+          jsonData.inLanguage = currentLang;
+          
+          structuredDataEl.textContent = JSON.stringify(jsonData, null, 2);
+        }
+      });
     </script>
     
     <script src="https://cdn.tailwindcss.com"></script>

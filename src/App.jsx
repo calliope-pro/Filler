@@ -245,6 +245,19 @@ export default function App() {
         {/* Footer */}
         <div className="mt-8 text-center text-xs text-gray-500">
           <p>{t('footer.purpose')}</p>
+          <div className="mt-4 space-y-2">
+            <p>
+              <a 
+                href="https://github.com/calliope-pro/Filler" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:text-blue-800 underline"
+              >
+                GitHub Repository
+              </a>
+            </p>
+            <p>© 2025-present calliope-pro. Licensed under the Apache License, Version 2.0.</p>
+          </div>
         </div>
       </div>
     </div>
