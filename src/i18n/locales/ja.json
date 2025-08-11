@@ -17,31 +17,31 @@
     "txt": {
       "label": "テキスト (.txt)",
       "description": "プレーンテキストファイル",
-      "algorithm": "ゼロバイトで埋めたテキストファイルを生成します"
+      "algorithm": "ランダムテキストファイルを生成します"
     },
     "csv": {
       "label": "CSV表 (.csv)",
       "description": "カンマ区切り値ファイル",
-      "algorithm": "ID、名前、メール、電話などのダミーデータでCSVファイルを生成します"
+      "algorithm": "ダミーデータでCSVファイルを生成します"
     },
     "png": {
       "label": "PNG画像 (.png)",
-      "description": "1x1透明画像（標準ビューワ対応）",
+      "description": "1x1透明画像",
       "algorithm": "1x1ピクセルの透明画像をベースに、コメントチャンクでサイズ調整します"
     },
     "pdf": {
       "label": "PDF文書 (.pdf)",
-      "description": "PDF文書ファイル（調整あり）",
+      "description": "PDF文書ファイル",
       "algorithm": "基本のPDF文書を作成後、コメント行を追加してサイズ調整します"
     },
     "mp3": {
       "label": "MP3音声 (.mp3)",
-      "description": "無音音声ファイル（標準プレイヤー対応）",
+      "description": "無音音声ファイル",
       "algorithm": "無音のMP3ファイルを生成し、メタデータやパディングでサイズ調整します"
     },
     "mp4": {
       "label": "MP4動画 (.mp4)",
-      "description": "1x1黒画面動画（標準プレイヤー対応）",
+      "description": "1x1黒画面動画",
       "algorithm": "1x1ピクセルの黒画面動画を作成し、メタデータでサイズ調整します"
     }
   },

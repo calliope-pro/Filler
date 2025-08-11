@@ -1,4 +1,4 @@
-import { generateTextFile } from './generators/rawFileGenerator.ts';
+import { generateTextFile } from './generators/textFileGenerator.ts';
 import { generatePNG } from './generators/pngGenerator.ts';
 import { generatePDF } from './generators/pdfGenerator.ts';
 import { generateMP3 } from './generators/mp3Generator.ts';

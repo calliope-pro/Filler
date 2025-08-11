@@ -20,11 +20,10 @@ export function SizeInput({ value, unit, onValueChange, onUnitChange }: SizeInpu
       <div className="flex gap-2">
         <input
           id="size-input"
-          type="number"
+          type="numeric"
           value={value}
           onChange={(e) => onValueChange(e.target.value)}
           min="0"
-          step="any"
           placeholder={t('form.sizePlaceholder')}
           className="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
         />

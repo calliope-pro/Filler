@@ -27,14 +27,11 @@ export default function App(): JSX.Element {
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
   const [progress, setProgress] = useState<number>(0);
   const [estimatedTime, setEstimatedTime] = useState<number | null>(null);
-  
-  // Inline message states
   const [inlineMessage, setInlineMessage] = useState<InlineMessageState | null>(null);
 
   // Safe size value setter with validation
   const handleSizeValueChange = useCallback((value: string) => {
-    // Only allow positive numbers and empty string, with additional safety
-    if (value === '' || (/^\d*\.?\d*$/.test(value) && !isNaN(parseFloat(value)) && parseFloat(value) >= 0 && isFinite(parseFloat(value)))) {
+    if (/^\d*$/.test(value)) {
       setSizeValue(value);
       setInlineMessage(null);
     }
@@ -164,15 +161,6 @@ export default function App(): JSX.Element {
   // Validation for generation (more strict)
   const validateForm = useCallback(() => {
     try {
-      if (!sizeValue || sizeValue.trim() === '' || isNaN(parseFloat(sizeValue))) {
-        return t('errors.invalidSize');
-      }
-      
-      const numValue = parseFloat(sizeValue);
-      if (numValue <= 0) {
-        return t('errors.sizeZero');
-      }
-      
       const bytes = parseSizeInput(sizeValue, sizeUnit);
       if (bytes === 0) {
         return t('errors.sizeZero');
