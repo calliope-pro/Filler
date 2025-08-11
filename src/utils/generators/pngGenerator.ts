@@ -1,5 +1,5 @@
 // CRC32 calculation for PNG chunks
-function crc32(data) {
+function crc32(data: Uint8Array): number {
   let crc = 0xFFFFFFFF;
   const table = new Array(256);
   
@@ -20,7 +20,7 @@ function crc32(data) {
   return (crc ^ 0xFFFFFFFF) >>> 0;
 }
 
-function writeUint32BE(value) {
+function writeUint32BE(value: number): Uint8Array {
   return new Uint8Array([
     (value >>> 24) & 0xFF,
     (value >>> 16) & 0xFF,
@@ -29,7 +29,7 @@ function writeUint32BE(value) {
   ]);
 }
 
-function createPNGChunk(type, data) {
+function createPNGChunk(type: string, data: Uint8Array): Uint8Array {
   const typeBytes = new TextEncoder().encode(type);
   const length = data.length;
   const chunk = new Uint8Array(8 + length + 4);
@@ -53,7 +53,7 @@ function createPNGChunk(type, data) {
   return chunk;
 }
 
-export async function generatePNG(targetSize) {
+export async function generatePNG(targetSize: number, onProgress?: (progress: number) => void, signal?: AbortSignal): Promise<Blob> {
   if (targetSize < 67) {
     // Minimum valid PNG size, return basic structure
     const pngSignature = new Uint8Array([0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A]);
@@ -149,6 +149,14 @@ export async function generatePNG(targetSize) {
   result.set(idatChunk, offset); offset += idatChunk.length;
   result.set(textChunk, offset); offset += textChunk.length;
   result.set(iendChunk, offset);
+  
+  if (signal?.aborted) {
+    throw new DOMException('Generation was aborted', 'AbortError');
+  }
+  
+  if (onProgress) {
+    onProgress(1);
+  }
   
   return new Blob([result], { type: 'image/png' });
 }

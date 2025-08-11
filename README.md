@@ -16,6 +16,8 @@ Fillr is a browser-based dummy file generation service that creates files of exa
 - ⚡ **Fast**: Memory-efficient chunked generation handles large files quickly
 - 📱 **Cross-platform**: Works on desktop and mobile browsers
 - 🎨 **Multiple Formats**: TXT, CSV, PNG, PDF, MP3, MP4
+- 🔄 **Dynamic Algorithm Display**: Shows generation method based on selected format
+- ✅ **Real-time Validation**: Inline error messages with form validation style
 
 ## 🚀 Quick Start
 
@@ -36,26 +38,41 @@ npm run dev
 
 # Build for production
 npm run build
+
+# Type checking
+npm run type-check
+
+# Linting
+npm run lint
 ```
 
 ## 📋 Supported File Formats
 
 | Format | Description | Implementation |
 |--------|-------------|----------------|
-| **TXT** | Plain text files | Zero-filled or ASCII patterns |
-| **CSV** | Spreadsheet data | Generated with headers and sample data |
-| **PNG** | Image files | 1×1 transparent image with size adjustment |
-| **PDF** | Document files | Minimal PDF with comment padding |
-| **MP3** | Audio files | Silent audio with ID3 tags |
-| **MP4** | Video files | 1×1 black screen video |
+| **TXT** | Plain text files | Random text generation with printable characters |
+| **CSV** | Spreadsheet data | Generated with headers (ID, Name, Email, Phone, Address, City, Country) and dummy data |
+| **PNG** | Image files | 1×1 transparent image with comment chunks for size adjustment |
+| **PDF** | Document files | Minimal PDF with comment lines for padding |
+| **MP3** | Audio files | Silent audio with ID3 metadata and padding |
+| **MP4** | Video files | 1×1 black screen video with metadata adjustment |
+
+### Dynamic Algorithm Display
+The UI dynamically shows the generation method based on the selected format:
+- **TXT**: "Generates a text file filled with random characters"
+- **CSV**: "Generates CSV file with dummy data"
+- **PNG**: "Creates a 1x1 transparent image and adjusts size with comment chunks"
+- And more...
 
 ## 🛠 Technical Stack
 
-- **Frontend**: React 18 + Vite
+- **Frontend**: React 18 + TypeScript
+- **Build Tool**: Vite
 - **Styling**: Tailwind CSS
-- **Internationalization**: react-i18next
+- **Internationalization**: react-i18next with automatic language detection
 - **File Generation**: Custom implementations with format-specific structures
-- **Build**: Vite with optimizations
+- **Error Handling**: React Error Boundaries with inline validation messages
+- **Icons**: Lucide React
 
 ## 🌐 Browser Support
 
@@ -64,20 +81,56 @@ npm run build
 - Safari 13+
 - Edge 80+
 
-*Note: Uses modern Web APIs including Blob, URL.createObjectURL, and Crypto (optional)*
+*Note: Uses modern Web APIs including Blob, URL.createObjectURL, and Crypto for random generation*
 
 ## 📖 How It Works
 
-1. **Size Parsing**: Converts user input (1MB, 512KB, etc.) to exact byte counts
-2. **Format Generation**: Creates format-specific file structures
+1. **Size Parsing**: Converts user input (1MB, 512KB, etc.) to exact byte counts with real-time validation
+2. **Format Selection**: Dynamic algorithm description updates based on selected format
 3. **Memory Management**: Uses chunked generation for large files to prevent memory issues
-4. **Download**: Generates Blob URLs for instant download
+4. **Error Handling**: Inline validation with form-style error messages
+5. **Download**: Generates Blob URLs for instant download
 
 ### File Size Limits
 
-- **Recommended**: Up to 1GB per file
-- **Maximum**: 10GiB (browser memory dependent)
+- **Maximum**: 10 GiB (10,737,418,240 bytes)
+- **Recommended**: Up to 1 GB per file for optimal performance
 - **Mobile**: Lower limits recommended due to device constraints
+- **Real-time Validation**: Immediate feedback for invalid sizes
+
+### UI Features
+
+- **GitHub Integration**: GitHub icon in header for easy repository access
+- **Language Selection**: Simple language switcher without flag icons
+- **Responsive Design**: Works on desktop and mobile devices
+- **Accessibility**: Full keyboard navigation and screen reader support
+
+## 🧪 File Generation Algorithms
+
+### TXT Files
+- Generates random printable ASCII characters (0x20-0x7E range)
+- Exact byte count guaranteed
+- Readable text content for testing
+
+### CSV Files
+- Header: `ID,Name,Email,Phone,Address,City,Country`
+- Data rows: `1,User0001,user1@example.com,555-0001,1 Main Street,City1,USA`
+- Alternating countries (USA/Canada)
+- Partial rows for exact size matching
+
+### PNG Files
+- Base: 1x1 transparent PNG image
+- Size adjustment: tEXt comment chunks with CRC calculation
+- Valid PNG format maintained
+
+### PDF Files
+- Minimal PDF structure
+- Size adjustment: Comment lines starting with `%`
+- Compatible with standard PDF readers
+
+### Audio/Video Files
+- MP3: Silent audio with configurable duration and metadata
+- MP4: 1x1 black screen video with minimal encoding
 
 ## 🤝 Contributing
 
@@ -91,14 +144,31 @@ We welcome contributions! Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for gu
 4. **Push** to the branch: `git push origin feature/your-feature`
 5. **Submit** a Pull Request
 
+### Development Setup
+
+```bash
+# Install dependencies
+npm install
+
+# Run type checking
+npm run type-check
+
+# Run linting
+npm run lint
+
+# Start development server with hot reload
+npm run dev
+```
+
 ### Areas for Contribution
 
 - 🎨 UI/UX improvements
 - 🌍 Additional language translations
-- 📁 New file format support
+- 📁 New file format support (JPEG, GIF, etc.)
 - ⚡ Performance optimizations
 - 🧪 Test coverage expansion
 - 📖 Documentation improvements
+- 🔧 Better error handling
 
 ## 🐛 Issues & Support
 
@@ -116,7 +186,7 @@ This project is licensed under the **Apache License 2.0** - see the [LICENSE](./
 
 - ✅ Commercial use
 - ✅ Modification
-- ✅ Distribution
+- ✅ Distribution  
 - ✅ Private use
 - ✅ Patent use
 - ❗ License and copyright notice required
@@ -127,6 +197,7 @@ This project is licensed under the **Apache License 2.0** - see the [LICENSE](./
 - Built with modern web technologies and accessibility in mind
 - Inspired by the need for exact-size test files in development workflows
 - Thanks to all contributors and users who help improve Fillr
+- TypeScript implementation for better developer experience
 
 ---
 

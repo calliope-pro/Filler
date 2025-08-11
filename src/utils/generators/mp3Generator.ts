@@ -1,4 +1,4 @@
-function encodeID3v2Size(size) {
+function encodeID3v2Size(size: number): Uint8Array {
   // ID3v2 uses synchsafe integers (7 bits per byte)
   return new Uint8Array([
     (size >>> 21) & 0x7F,
@@ -8,7 +8,7 @@ function encodeID3v2Size(size) {
   ]);
 }
 
-function createID3v2Header(tagSize) {
+function createID3v2Header(tagSize: number): Uint8Array {
   const header = new Uint8Array(10);
   
   // ID3v2 identifier
@@ -30,7 +30,7 @@ function createID3v2Header(tagSize) {
   return header;
 }
 
-function createTitleFrame(title) {
+function createTitleFrame(title: string): Uint8Array {
   const titleBytes = new TextEncoder().encode(title);
   const frameSize = 1 + titleBytes.length; // 1 byte for encoding + title
   
@@ -61,7 +61,7 @@ function createTitleFrame(title) {
   return frame;
 }
 
-function createMP3Frame(frameSize) {
+function createMP3Frame(frameSize: number): Uint8Array {
   // Create a valid MP3 frame header
   const frame = new Uint8Array(frameSize);
   
@@ -80,7 +80,7 @@ function createMP3Frame(frameSize) {
   return frame;
 }
 
-export function generateMP3(targetSize) {
+export async function generateMP3(targetSize: number, onProgress?: (progress: number) => void, signal?: AbortSignal): Promise<Blob> {
   if (targetSize < 32) {
     // Too small for valid MP3, create minimal structure
     const result = new Uint8Array(targetSize);
@@ -122,7 +122,6 @@ export function generateMP3(targetSize) {
   }
   
   // Create MP3 frames to fill remaining space
-  const mp3DataSize = targetSize - id3TotalSize;
   const standardFrameSize = 417; // Standard size for 128kbps MP3 frame
   
   const result = new Uint8Array(targetSize);
@@ -151,6 +150,14 @@ export function generateMP3(targetSize) {
       }
       break;
     }
+  }
+  
+  if (signal?.aborted) {
+    throw new DOMException('Generation was aborted', 'AbortError');
+  }
+  
+  if (onProgress) {
+    onProgress(1);
   }
   
   return new Blob([result], { type: 'audio/mpeg' });

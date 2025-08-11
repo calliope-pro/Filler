@@ -1,11 +1,12 @@
 import { useTranslation } from 'react-i18next';
 import { getSupportedUnits } from '../utils/sizeParser.ts';
+import { SizeUnit } from '../types/sizeUnits';
 
 interface SizeInputProps {
   value: string;
-  unit: string;
+  unit: SizeUnit;
   onValueChange: (value: string) => void;
-  onUnitChange: (unit: string) => void;
+  onUnitChange: (unit: SizeUnit) => void;
 }
 
 export function SizeInput({ value, unit, onValueChange, onUnitChange }: SizeInputProps): JSX.Element {
@@ -29,7 +30,7 @@ export function SizeInput({ value, unit, onValueChange, onUnitChange }: SizeInpu
         />
         <select
           value={unit}
-          onChange={(e) => onUnitChange(e.target.value)}
+          onChange={(e) => onUnitChange(e.target.value as SizeUnit)}
           className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           aria-label={t('form.fileSize')}
         >

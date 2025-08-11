@@ -1,4 +1,5 @@
 import { AlertTriangle, CheckCircle, XCircle, Info } from 'lucide-react';
+import { Button } from '@headlessui/react';
 
 export type MessageType = 'success' | 'warning' | 'error' | 'info';
 
@@ -79,21 +80,21 @@ export function InlineMessage({
           {/* Action buttons for warnings that need confirmation */}
           {onConfirm && (
             <div className="mt-3 flex space-x-2">
-              <button
+              <Button
                 onClick={onConfirm}
                 className={getButtonStyle(true)}
                 type="button"
               >
                 {confirmText}
-              </button>
+              </Button>
               {onCancel && (
-                <button
+                <Button
                   onClick={onCancel}
                   className={getButtonStyle(false)}
                   type="button"
                 >
                   {cancelText}
-                </button>
+                </Button>
               )}
             </div>
           )}

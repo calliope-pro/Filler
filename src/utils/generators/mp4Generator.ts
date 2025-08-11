@@ -3,7 +3,7 @@
  * @param {number} value The integer to write.
  * @returns {Uint8Array} A 4-byte array.
  */
-function writeUint32BE(value) {
+function writeUint32BE(value: number): Uint8Array {
   return new Uint8Array([
     (value >>> 24) & 0xFF,
     (value >>> 16) & 0xFF,
@@ -17,7 +17,7 @@ function writeUint32BE(value) {
  * @param {...Uint8Array} arrays The arrays to concatenate.
  * @returns {Uint8Array} The concatenated array.
  */
-function concatUint8(...arrays) {
+function concatUint8(...arrays: Uint8Array[]): Uint8Array {
     const totalLength = arrays.reduce((acc, arr) => acc + arr.length, 0);
     const result = new Uint8Array(totalLength);
     let offset = 0;
@@ -35,7 +35,7 @@ function concatUint8(...arrays) {
  * @param {Uint8Array | Uint8Array[]} data The box's payload. Can be a single array or an array of arrays (for nested boxes).
  * @returns {Uint8Array} The complete box as a byte array.
  */
-function createBox(type, data) {
+function createBox(type: string, data: Uint8Array | Uint8Array[]): Uint8Array {
     const typeBytes = new TextEncoder().encode(type);
     const dataArray = Array.isArray(data) ? data : [data];
     const dataLength = dataArray.reduce((acc, arr) => acc + arr.length, 0);
@@ -54,7 +54,7 @@ function createBox(type, data) {
  * @param {number} targetSize The desired file size in bytes.
  * @returns {Blob} The generated MP4 file as a Blob.
  */
-export function generateMP4(targetSize) {
+export async function generateMP4(targetSize: number, onProgress?: (progress: number) => void, signal?: AbortSignal): Promise<Blob> {
     // ---- ATOM/BOX DEFINITIONS ----
     
     // ftyp (File Type Box): Identifies the file format.
@@ -288,5 +288,13 @@ export function generateMP4(targetSize) {
 
     const result = concatUint8(header, mdat);
     
-    return new Blob([result], { type: 'video/mp4' });
+    if (signal?.aborted) {
+        throw new DOMException('Generation was aborted', 'AbortError');
+    }
+    
+    if (onProgress) {
+        onProgress(1);
+    }
+    
+    return new Blob([result.buffer as ArrayBuffer], { type: 'video/mp4' });
 }

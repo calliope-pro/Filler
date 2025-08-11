@@ -1,14 +1,16 @@
 {
   "app": {
     "title": "Fillr",
-    "tagline": "必要なサイズのファイルを、必要なだけ",
-    "description": "クライアントサイド完結のダミーファイル生成サービス"
+    "tagline": "必要なサイズのファイルを、安全・瞬時・無制限に",
+    "description": "ブラウザ完結だから、プライベート・高速・いつでも利用可能"
   },
   "form": {
     "fileSize": "ファイルサイズ",
     "sizePlaceholder": "サイズを入力",
     "fileFormat": "ファイル形式",
     "generateButton": "ファイル生成",
+    "generateAnyway": "それでも生成",
+    "cancel": "キャンセル",
     "generating": "生成中...",
     "willGenerate": "{{size}} バイトの {{format}} ファイルを生成します",
     "maxSize": "最大サイズ: 10 GiB ({{bytes}} バイト)"
@@ -43,6 +45,11 @@
       "label": "MP4動画 (.mp4)",
       "description": "1x1黒画面動画",
       "algorithm": "1x1ピクセルの黒画面動画を作成し、メタデータでサイズ調整します"
+    },
+    "json": {
+      "label": "JSON (.json)",
+      "description": "JSON データファイル",
+      "algorithm": "ユーザー、製品、注文の構造化されたJSONデータを生成します"
     }
   },
   "algorithm": {
@@ -75,6 +82,9 @@
   },
   "footer": {
     "purpose": "開発・テスト用途のダミーファイル生成に最適"
+  },
+  "warnings": {
+    "fileSizeBelowMinimum": "{{format}}ファイルは通常{{minSize}}バイト以上が必要です。これより小さなファイルは標準ソフトウェアで正しく開かない可能性があります。それでも生成しますか？"
   },
   "errors": {
     "sizeZero": "ファイルサイズは0より大きい値を指定してください",

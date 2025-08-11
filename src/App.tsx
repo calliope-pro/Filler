@@ -5,9 +5,11 @@ import { FormatSelector } from './components/FormatSelector.tsx';
 import { ProgressBar } from './components/ProgressBar.tsx';
 import { LanguageSelector } from './components/LanguageSelector.tsx';
 import { InlineMessage, MessageType } from './components/InlineMessage.tsx';
-import { parseSizeInput, getMaxFileSize } from './utils/sizeParser.ts';
+import { parseSizeInput, getMaxFileSize, getMinFileSize } from './utils/sizeParser.ts';
 import { generateFile, getDefaultFilename } from './utils/fileGenerator.ts';
 import { downloadBlob, validateBrowserSupport } from './utils/downloadHandler.ts';
+import { FileFormat, DEFAULT_FILE_FORMAT } from './types/fileFormats';
+import { SizeUnit, DEFAULT_SIZE_UNIT, SIZE_MULTIPLIERS } from './types/sizeUnits';
 import './i18n/index.ts';
 
 interface InlineMessageState {
@@ -22,8 +24,8 @@ interface InlineMessageState {
 export default function App(): JSX.Element {
   const { t } = useTranslation();
   const [sizeValue, setSizeValue] = useState<string>('1');
-  const [sizeUnit, setSizeUnit] = useState<string>('MB');
-  const [format, setFormat] = useState<string>('txt');
+  const [sizeUnit, setSizeUnit] = useState<SizeUnit>(DEFAULT_SIZE_UNIT);
+  const [format, setFormat] = useState<FileFormat>(DEFAULT_FILE_FORMAT);
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
   const [progress, setProgress] = useState<number>(0);
   const [estimatedTime, setEstimatedTime] = useState<number | null>(null);
@@ -48,16 +50,6 @@ export default function App(): JSX.Element {
     });
   }, []);
 
-  const showInlineWarning = useCallback((message: string, onConfirm?: () => void, confirmText?: string, cancelText?: string) => {
-    setInlineMessage({
-      type: 'warning',
-      message,
-      onConfirm,
-      onCancel: () => setInlineMessage(null),
-      confirmText,
-      cancelText
-    });
-  }, []);
 
 
   const continueGeneration = useCallback(async (bytes: number) => {
@@ -69,25 +61,30 @@ export default function App(): JSX.Element {
     // Create abort controller for cancellation
     abortControllerRef.current = new AbortController();
 
-    // Simulate progress for user feedback
-    const progressInterval = setInterval(() => {
-      setProgress(prev => {
-        const newProgress = Math.min(prev + 0.1, 0.9);
-        
-        // Estimate remaining time
-        const elapsed = (Date.now() - startTime) / 1000;
-        const estimatedTotal = elapsed / newProgress;
-        const remaining = estimatedTotal - elapsed;
-        setEstimatedTime(remaining);
-        
-        return newProgress;
-      });
-    }, 100);
+    // Track progress updates timing
+    let lastProgressUpdate = 0;
 
     try {
-      const blob = await generateFile(format, bytes);
+      const blob = await generateFile(format, bytes, (progress) => {
+        const now = Date.now();
+        
+        // Throttle progress updates to avoid excessive re-renders
+        if (now - lastProgressUpdate > 100) {
+          setProgress(progress);
+          
+          // Calculate estimated time based on actual progress
+          if (progress > 0.01) {
+            const elapsed = (now - startTime) / 1000;
+            const estimatedTotal = elapsed / progress;
+            const remaining = Math.max(0, estimatedTotal - elapsed);
+            setEstimatedTime(remaining);
+          }
+          
+          lastProgressUpdate = now;
+        }
+      }, abortControllerRef.current?.signal);
       
-      clearInterval(progressInterval);
+      // Final progress update
       setProgress(1);
       setEstimatedTime(0);
 
@@ -108,10 +105,15 @@ export default function App(): JSX.Element {
       }, 1000);
       
     } catch (err) {
-      clearInterval(progressInterval);
       const error = err as Error;
       
-      showInlineError(`生成エラー: ${error.message}`);
+      // Handle abort specifically
+      if (error.name === 'AbortError') {
+        // Generation was cancelled, just clean up state
+        console.log('File generation was cancelled');
+      } else {
+        showInlineError(`生成エラー: ${error.message}`);
+      }
       
       setIsGenerating(false);
       setProgress(0);
@@ -130,19 +132,7 @@ export default function App(): JSX.Element {
       return 0;
     }
     
-    const multipliers: Record<string, number> = {
-      'B': 1,
-      'KB': 1000,
-      'MB': 1000 * 1000,
-      'GB': 1000 * 1000 * 1000,
-      'TB': 1000 * 1000 * 1000 * 1000,
-      'KiB': 1024,
-      'MiB': 1024 * 1024,
-      'GiB': 1024 * 1024 * 1024,
-      'TiB': 1024 * 1024 * 1024 * 1024,
-    };
-    
-    const multiplier = multipliers[sizeUnit];
+    const multiplier = SIZE_MULTIPLIERS[sizeUnit];
     if (!multiplier) {
       return 0;
     }
@@ -158,6 +148,17 @@ export default function App(): JSX.Element {
   }, [sizeValue, sizeUnit]);
 
   
+  // Check if file size is below minimum recommended for format
+  const isUnderMinimumSize = useCallback(() => {
+    try {
+      const bytes = parseSizeInput(sizeValue, sizeUnit);
+      const minSize = getMinFileSize(format);
+      return bytes > 0 && bytes < minSize;
+    } catch {
+      return false;
+    }
+  }, [sizeValue, sizeUnit, format]);
+
   // Validation for generation (more strict)
   const validateForm = useCallback(() => {
     try {
@@ -185,6 +186,10 @@ export default function App(): JSX.Element {
       return;
     }
 
+    proceedWithGeneration();
+  }, [validateForm, showInlineError]);
+
+  const proceedWithGeneration = useCallback(async () => {
     try {
       validateBrowserSupport();
       
@@ -199,7 +204,7 @@ export default function App(): JSX.Element {
       
       showInlineError(errorMessage);
     }
-  }, [sizeValue, sizeUnit, validateForm, showInlineError, showInlineWarning, continueGeneration, t]);
+  }, [sizeValue, sizeUnit, showInlineError, continueGeneration, t]);
 
   const handleCancel = useCallback(() => {
     if (abortControllerRef.current) {
@@ -237,6 +242,28 @@ export default function App(): JSX.Element {
   }, [sizeValue, totalBytes]);
   
   const validationError = getValidationError();
+  
+  // Check if current input is below minimum recommended size
+  const getMinimumSizeWarning = useCallback(() => {
+    if (!sizeValue || sizeValue.trim() === '' || validationError || isGenerating) {
+      return null;
+    }
+    
+    if (isUnderMinimumSize()) {
+      const minSize = getMinFileSize(format);
+      return {
+        type: 'warning' as MessageType,
+        message: t('warnings.fileSizeBelowMinimum', { 
+          format: format.toUpperCase(), 
+          minSize 
+        })
+      };
+    }
+    
+    return null;
+  }, [sizeValue, format, validationError, isGenerating, isUnderMinimumSize, t]);
+  
+  const minimumSizeWarning = getMinimumSizeWarning();
   
 
   return (
@@ -300,6 +327,14 @@ export default function App(): JSX.Element {
             <InlineMessage
               type="error"
               message={validationError}
+            />
+          )}
+          
+          {/* Minimum Size Warning */}
+          {!validationError && minimumSizeWarning && !inlineMessage && (
+            <InlineMessage
+              type={minimumSizeWarning.type}
+              message={minimumSizeWarning.message}
             />
           )}
           

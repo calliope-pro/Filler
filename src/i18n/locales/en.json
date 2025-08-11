@@ -1,14 +1,16 @@
 {
   "app": {
     "title": "Fillr",
-    "tagline": "Create files of exact size, as needed",
-    "description": "Client-side dummy file generation service"
+    "tagline": "Create files of exact size — secure, instant, unlimited",
+    "description": "Browser-only service: private, fast, always available"
   },
   "form": {
     "fileSize": "File Size",
     "sizePlaceholder": "Enter size",
     "fileFormat": "File Format",
     "generateButton": "Generate File",
+    "generateAnyway": "Generate Anyway",
+    "cancel": "Cancel",
     "generating": "Generating...",
     "willGenerate": "Will generate {{size}} bytes {{format}} file",
     "maxSize": "Maximum size: 10 GiB ({{bytes}} bytes)"
@@ -43,6 +45,11 @@
       "label": "MP4 Video (.mp4)",
       "description": "1x1 black screen video",
       "algorithm": "Creates a 1x1 black screen video and adjusts size with metadata"
+    },
+    "json": {
+      "label": "JSON (.json)",
+      "description": "JSON data file",
+      "algorithm": "Generates structured JSON data with users, products, and orders"
     }
   },
   "algorithm": {
@@ -75,6 +82,9 @@
   },
   "footer": {
     "purpose": "Perfect for development and testing dummy file generation"
+  },
+  "warnings": {
+    "fileSizeBelowMinimum": "{{format}} files typically require at least {{minSize}} bytes to be valid. Files smaller than this may not open properly in standard software. Do you want to generate anyway?"
   },
   "errors": {
     "sizeZero": "File size must be greater than 0",
