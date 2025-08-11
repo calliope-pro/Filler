@@ -1,5 +1,13 @@
-import React from 'react';
 import { useTranslation } from 'react-i18next';
+
+interface ProgressBarProps {
+  isGenerating: boolean;
+  progress: number;
+  currentBytes: number;
+  totalBytes: number;
+  estimatedTimeRemaining: number | null;
+  onCancel?: () => void;
+}
 
 export function ProgressBar({ 
   isGenerating, 
@@ -8,7 +16,7 @@ export function ProgressBar({
   totalBytes, 
   estimatedTimeRemaining,
   onCancel 
-}) {
+}: ProgressBarProps): JSX.Element | null {
   const { t } = useTranslation();
 
   if (!isGenerating) return null;

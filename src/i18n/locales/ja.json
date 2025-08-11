@@ -16,32 +16,38 @@
   "formats": {
     "txt": {
       "label": "テキスト (.txt)",
-      "description": "プレーンテキストファイル"
+      "description": "プレーンテキストファイル",
+      "algorithm": "ゼロバイトで埋めたテキストファイルを生成します"
     },
     "csv": {
       "label": "CSV表 (.csv)",
-      "description": "カンマ区切り値ファイル"
+      "description": "カンマ区切り値ファイル",
+      "algorithm": "ID、名前、メール、電話などのダミーデータでCSVファイルを生成します"
     },
     "png": {
       "label": "PNG画像 (.png)",
-      "description": "1x1透明画像（標準ビューワ対応）"
+      "description": "1x1透明画像（標準ビューワ対応）",
+      "algorithm": "1x1ピクセルの透明画像をベースに、コメントチャンクでサイズ調整します"
     },
     "pdf": {
       "label": "PDF文書 (.pdf)",
-      "description": "PDF文書ファイル（調整あり）"
+      "description": "PDF文書ファイル（調整あり）",
+      "algorithm": "基本のPDF文書を作成後、コメント行を追加してサイズ調整します"
     },
     "mp3": {
       "label": "MP3音声 (.mp3)",
-      "description": "無音音声ファイル（標準プレイヤー対応）"
+      "description": "無音音声ファイル（標準プレイヤー対応）",
+      "algorithm": "無音のMP3ファイルを生成し、メタデータやパディングでサイズ調整します"
     },
     "mp4": {
       "label": "MP4動画 (.mp4)",
-      "description": "1x1黒画面動画（標準プレイヤー対応）"
+      "description": "1x1黒画面動画（標準プレイヤー対応）",
+      "algorithm": "1x1ピクセルの黒画面動画を作成し、メタデータでサイズ調整します"
     }
   },
   "algorithm": {
     "title": "生成方法",
-    "description": "TXT・CSV: ゼロ埋め / PNG: 1x1透明画像 / PDF: コメント調整 / MP3: 無音データ / MP4: 黒画面動画"
+    "description": "TXT: ゼロ埋め / CSV: ダミーデータ生成 / PNG: 1x1透明画像 / PDF: コメント調整 / MP3: 無音データ / MP4: 黒画面動画"
   },
   "progress": {
     "generating": "ファイル生成中...",

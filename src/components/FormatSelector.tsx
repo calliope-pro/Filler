@@ -1,8 +1,13 @@
 import { useTranslation } from 'react-i18next';
 
-const SUPPORTED_FORMATS = ['txt', 'csv', 'png', 'pdf', 'mp3', 'mp4'];
+const SUPPORTED_FORMATS = ['txt', 'csv', 'png', 'pdf', 'mp3', 'mp4'] as const;
 
-export function FormatSelector({ value, onChange }) {
+interface FormatSelectorProps {
+  value: string;
+  onChange: (format: string) => void;
+}
+
+export function FormatSelector({ value, onChange }: FormatSelectorProps): JSX.Element {
   const { t } = useTranslation();
 
   return (

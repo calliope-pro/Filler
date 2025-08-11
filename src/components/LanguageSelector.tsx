@@ -1,15 +1,19 @@
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-const LANGUAGES = [
-  { code: 'ja', name: '日本語', flag: '🇯🇵' },
-  { code: 'en', name: 'English', flag: '🇺🇸' }
+interface Language {
+  code: string;
+  name: string;
+}
+
+const LANGUAGES: Language[] = [
+  { code: 'ja', name: '日本語' },
+  { code: 'en', name: 'English' }
 ];
 
-export function LanguageSelector() {
+export function LanguageSelector(): JSX.Element {
   const { i18n } = useTranslation();
 
-  const handleLanguageChange = (languageCode) => {
+  const handleLanguageChange = (languageCode: string): void => {
     i18n.changeLanguage(languageCode);
     // Update HTML lang attribute
     const htmlElement = document.getElementById('html-root');
@@ -31,7 +35,6 @@ export function LanguageSelector() {
           }`}
           aria-label={`Switch to ${lang.name}`}
         >
-          <span className="mr-1">{lang.flag}</span>
           {lang.name}
         </button>
       ))}

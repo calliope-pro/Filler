@@ -1,8 +1,14 @@
-import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { getSupportedUnits } from '../utils/sizeParser.js';
+import { getSupportedUnits } from '../utils/sizeParser.ts';
 
-export function SizeInput({ value, unit, onValueChange, onUnitChange, error }) {
+interface SizeInputProps {
+  value: string;
+  unit: string;
+  onValueChange: (value: string) => void;
+  onUnitChange: (unit: string) => void;
+}
+
+export function SizeInput({ value, unit, onValueChange, onUnitChange }: SizeInputProps): JSX.Element {
   const { t } = useTranslation();
   const units = getSupportedUnits();
 
@@ -20,10 +26,7 @@ export function SizeInput({ value, unit, onValueChange, onUnitChange, error }) {
           min="0"
           step="any"
           placeholder={t('form.sizePlaceholder')}
-          className={`flex-1 px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-            error ? 'border-red-500' : 'border-gray-300'
-          }`}
-          aria-describedby={error ? 'size-error' : undefined}
+          className="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
         />
         <select
           value={unit}
@@ -36,11 +39,6 @@ export function SizeInput({ value, unit, onValueChange, onUnitChange, error }) {
           ))}
         </select>
       </div>
-      {error && (
-        <p id="size-error" className="text-sm text-red-600" role="alert">
-          {error}
-        </p>
-      )}
     </div>
   );
 }

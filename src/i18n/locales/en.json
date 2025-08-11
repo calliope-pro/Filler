@@ -16,32 +16,38 @@
   "formats": {
     "txt": {
       "label": "Text (.txt)",
-      "description": "Plain text file"
+      "description": "Plain text file",
+      "algorithm": "Generates a text file filled with zero bytes"
     },
     "csv": {
       "label": "CSV Table (.csv)",
-      "description": "Comma-separated values file"
+      "description": "Comma-separated values file",
+      "algorithm": "Generates CSV file with dummy data including ID, name, email, phone, and address"
     },
     "png": {
       "label": "PNG Image (.png)",
-      "description": "1x1 transparent image (standard viewer compatible)"
+      "description": "1x1 transparent image (standard viewer compatible)",
+      "algorithm": "Creates a 1x1 transparent image and adjusts size with comment chunks"
     },
     "pdf": {
       "label": "PDF Document (.pdf)",
-      "description": "PDF document file (size adjusted)"
+      "description": "PDF document file (size adjusted)",
+      "algorithm": "Creates a basic PDF document and adds comment lines for size adjustment"
     },
     "mp3": {
       "label": "MP3 Audio (.mp3)",
-      "description": "Silent audio file (standard player compatible)"
+      "description": "Silent audio file (standard player compatible)",
+      "algorithm": "Generates silent MP3 file and adjusts size with metadata and padding"
     },
     "mp4": {
       "label": "MP4 Video (.mp4)",
-      "description": "1x1 black screen video (standard player compatible)"
+      "description": "1x1 black screen video (standard player compatible)",
+      "algorithm": "Creates a 1x1 black screen video and adjusts size with metadata"
     }
   },
   "algorithm": {
     "title": "Generation Method",
-    "description": "TXT/CSV: Zero-filled / PNG: 1x1 transparent / PDF: Comment padding / MP3: Silent audio / MP4: Black screen video"
+    "description": "TXT: Zero-filled / CSV: Dummy data generation / PNG: 1x1 transparent / PDF: Comment padding / MP3: Silent audio / MP4: Black screen video"
   },
   "progress": {
     "generating": "Generating file...",
