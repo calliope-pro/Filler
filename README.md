@@ -4,7 +4,7 @@
 
 Fillr is a browser-based dummy file generation service that creates files of exactly the specified byte count. Perfect for development, testing, and performance analysis.
 
-[🌐 **Live Demo**](https://fillr.app/) | [🐛 **Report Issues**](https://github.com/calliope-pro/Filler/issues) | [🤝 **Contributing**](./CONTRIBUTING.md)
+[🌐 **Live Demo**](https://filler.netlify.app) | [🐛 **Report Issues**](https://github.com/calliope-pro/Filler/issues) | [🤝 **Contributing**](./CONTRIBUTING.md)
 
 ---
 
