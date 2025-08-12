@@ -1,6 +1,6 @@
 {
   "app": {
-    "title": "Fillr",
+    "title": "Simulacra",
     "tagline": "Generate dummy test files of exact size — instant, secure, unlimited",
     "description": "Browser-only service: private, fast, always available"
   },
@@ -75,7 +75,9 @@
     }
   },
   "footer": {
-    "purpose": "Perfect for development and testing dummy file generation"
+    "purpose": "Perfect for development and testing dummy file generation",
+    "terms": "Terms of Service",
+    "privacy": "Privacy Policy"
   },
   "warnings": {
     "fileSizeBelowMinimum": "{{format}} files typically require at least {{minSize}} bytes to be valid. Files smaller than this may not open properly in standard software. Do you want to generate anyway?"

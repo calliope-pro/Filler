@@ -1,16 +1,16 @@
-# Fillrへのコントリビューション
+# Simulacraへのコントリビューション
 
-Fillrへのコントリビューションにご関心をお寄せいただき、ありがとうございます！バグ修正、機能追加、ドキュメント改善、拡張提案など、すべての方からのコントリビューションを歓迎します。
+Simulacraへのコントリビューションにご関心をお寄せいただき、ありがとうございます！バグ修正、機能追加、ドキュメント改善、拡張提案など、すべての方からのコントリビューションを歓迎します。
 
 ## 🎯 コントリビューションの方法
 
 ### 🐛 バグ報告
-- [GitHub Issues](https://github.com/calliope-pro/Filler/issues)を使用してバグを報告
+- [GitHub Issues](https://github.com/calliope-pro/Simulacra/issues)を使用してバグを報告
 - 再現手順、期待される動作、実際の動作を含めてください
 - 関連する場合は、ブラウザバージョン、OS、ファイルサイズを記載
 
 ### ✨ 機能リクエスト
-- まず[GitHub Discussion](https://github.com/calliope-pro/Filler/discussions)で新機能について議論
+- まず[GitHub Discussion](https://github.com/calliope-pro/Simulacra/discussions)で新機能について議論
 - 用途と利点を説明してください
 - 実装の複雑さと保守性を考慮
 

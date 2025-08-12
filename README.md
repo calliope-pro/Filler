@@ -1,10 +1,10 @@
-# 📁 Fillr
+# 📁 Simulacra
 
 **Client-side dummy file generator with exact byte size control**
 
-Fillr is a browser-based dummy file generation service that creates files of exactly the specified byte count. Perfect for development, testing, and performance analysis.
+Simulacra is a browser-based dummy file generation service that creates files of exactly the specified byte count. Perfect for development, testing, and performance analysis.
 
-[🌐 **Live Demo**](https://filler.netlify.app) | [🐛 **Report Issues**](https://github.com/calliope-pro/Filler/issues) | [🤝 **Contributing**](./CONTRIBUTING.md)
+[🌐 **Live Demo**](https://simulacra-file.netlify.app) | [🐛 **Report Issues**](https://github.com/calliope-pro/Simulacra/issues) | [🤝 **Contributing**](./CONTRIBUTING.md)
 
 ---
 

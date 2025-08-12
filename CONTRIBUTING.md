@@ -1,16 +1,16 @@
-# Contributing to Fillr
+# Contributing to Simulacra
 
-Thank you for your interest in contributing to Fillr! We welcome contributions from everyone, whether you're fixing a bug, adding a feature, improving documentation, or suggesting enhancements.
+Thank you for your interest in contributing to Simulacra! We welcome contributions from everyone, whether you're fixing a bug, adding a feature, improving documentation, or suggesting enhancements.
 
 ## 🎯 Ways to Contribute
 
 ### 🐛 Bug Reports
-- Use the [GitHub Issues](https://github.com/calliope-pro/Filler/issues) to report bugs
+- Use the [GitHub Issues](https://github.com/calliope-pro/Simulacra/issues) to report bugs
 - Include steps to reproduce, expected behavior, and actual behavior
 - Add browser version, operating system, and file sizes when relevant
 
 ### ✨ Feature Requests
-- Open a [GitHub Discussion](https://github.com/calliope-pro/Filler/discussions) first to discuss new features
+- Open a [GitHub Discussion](https://github.com/calliope-pro/Simulacra/discussions) first to discuss new features
 - Explain the use case and benefits
 - Consider implementation complexity and maintainability
 

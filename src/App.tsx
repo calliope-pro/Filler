@@ -239,7 +239,7 @@ export default function App(): JSX.Element {
         <div className="text-center mb-8">
           <div className="flex justify-between items-center mb-4">
             <a 
-              href="https://github.com/calliope-pro/Filler" 
+              href="https://github.com/calliope-pro/Simulacra" 
               target="_blank" 
               rel="noopener noreferrer"
               className="text-gray-600 hover:text-gray-800 transition-colors duration-200"
@@ -394,12 +394,26 @@ export default function App(): JSX.Element {
           <div className="mt-4 space-y-2">
             <p>
               <a 
-                href="https://github.com/calliope-pro/Filler" 
+                href="https://github.com/calliope-pro/Simulacra" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-blue-600 hover:text-blue-800 underline"
               >
                 GitHub Repository
+              </a>
+              •
+              <a 
+                href="/terms-of-service.html" 
+                className="text-blue-600 hover:text-blue-800 underline"
+              >
+                {t('footer.terms', '利用規約')}
+              </a>
+              •
+              <a 
+                href="/privacy-policy.html" 
+                className="text-blue-600 hover:text-blue-800 underline"
+              >
+                {t('footer.privacy', 'プライバシーポリシー')}
               </a>
             </p>
             <p>© 2025-present calliope-pro. Licensed under the Apache License, Version 2.0.</p>

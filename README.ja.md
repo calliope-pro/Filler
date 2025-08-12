@@ -1,10 +1,10 @@
-# 📁 Fillr
+# 📁 Simulacra
 
 **正確なバイトサイズ制御を持つクライアントサイドダミーファイル生成ツール**
 
-Fillrは、指定したバイト数ぴったりのファイルを作成するブラウザベースのダミーファイル生成サービスです。開発、テスト、パフォーマンス分析に最適です。
+Simulacraは、指定したバイト数ぴったりのファイルを作成するブラウザベースのダミーファイル生成サービスです。開発、テスト、パフォーマンス分析に最適です。
 
-[🌐 **ライブデモ**](https://filler.netlify.app) | [🐛 **問題報告**](https://github.com/calliope-pro/Filler/issues) | [🤝 **コントリビューション**](./CONTRIBUTING.ja.md)
+[🌐 **ライブデモ**](https://simulacra-file.netlify.app) | [🐛 **問題報告**](https://github.com/calliope-pro/Simulacra/issues) | [🤝 **コントリビューション**](./CONTRIBUTING.ja.md)
 
 ---
 
