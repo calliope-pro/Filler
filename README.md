@@ -15,8 +15,9 @@ Fillr is a browser-based dummy file generation service that creates files of exa
 - 🔒 **Privacy-first**: All processing happens in your browser, no server uploads
 - ⚡ **Fast**: Memory-efficient chunked generation handles large files quickly
 - 📱 **Cross-platform**: Works on desktop and mobile browsers
-- 🎨 **Multiple Formats**: TXT, CSV, PNG, PDF, MP3, MP4
+- 🎨 **Multiple Formats**: TXT, CSV, PNG, PDF, MP3, MP4, JSON
 - 🔄 **Dynamic Algorithm Display**: Shows generation method based on selected format
+- 🚀 **Streaming Downloads**: Memory-efficient streaming with WebWorker for large files
 - ✅ **Real-time Validation**: Inline error messages with form validation style
 
 ## 🚀 Quick Start
@@ -56,6 +57,7 @@ npm run lint
 | **PDF** | Document files | Minimal PDF with comment lines for padding |
 | **MP3** | Audio files | Silent audio with ID3 metadata and padding |
 | **MP4** | Video files | 1×1 black screen video with metadata adjustment |
+| **JSON** | Data files | Structured JSON data with users, products, and orders |
 
 ### Dynamic Algorithm Display
 The UI dynamically shows the generation method based on the selected format:
@@ -70,9 +72,10 @@ The UI dynamically shows the generation method based on the selected format:
 - **Build Tool**: Vite
 - **Styling**: Tailwind CSS
 - **Internationalization**: react-i18next with automatic language detection
-- **File Generation**: Custom implementations with format-specific structures
+- **File Generation**: WebWorker-based streaming generation with StreamSaver.js
 - **Error Handling**: React Error Boundaries with inline validation messages
 - **Icons**: Lucide React
+- **Download**: StreamSaver.js for large file streaming downloads
 
 ## 🌐 Browser Support
 
@@ -87,13 +90,13 @@ The UI dynamically shows the generation method based on the selected format:
 
 1. **Size Parsing**: Converts user input (1MB, 512KB, etc.) to exact byte counts with real-time validation
 2. **Format Selection**: Dynamic algorithm description updates based on selected format
-3. **Memory Management**: Uses chunked generation for large files to prevent memory issues
-4. **Error Handling**: Inline validation with form-style error messages
-5. **Download**: Generates Blob URLs for instant download
+3. **WebWorker Generation**: Uses dedicated Web Workers for non-blocking file generation
+4. **Streaming Download**: StreamSaver.js enables memory-efficient downloads of large files
+5. **Error Handling**: Inline validation with form-style error messages
 
 ### File Size Limits
 
-- **Maximum**: 10 GiB (10,737,418,240 bytes)
+- **Maximum**: 10 TiB (10,995,116,277,760 bytes)
 - **Recommended**: Up to 1 GB per file for optimal performance
 - **Mobile**: Lower limits recommended due to device constraints
 - **Real-time Validation**: Immediate feedback for invalid sizes
@@ -131,6 +134,11 @@ The UI dynamically shows the generation method based on the selected format:
 ### Audio/Video Files
 - MP3: Silent audio with configurable duration and metadata
 - MP4: 1x1 black screen video with minimal encoding
+
+### JSON Files
+- Structured data with users, products, and orders
+- Valid JSON format with nested objects and arrays
+- Size adjustment through repeated data entries
 
 ## 🤝 Contributing
 

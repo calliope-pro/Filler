@@ -1,7 +1,7 @@
 {
   "app": {
     "title": "Fillr",
-    "tagline": "Create files of exact size — secure, instant, unlimited",
+    "tagline": "Generate dummy test files of exact size — instant, secure, unlimited",
     "description": "Browser-only service: private, fast, always available"
   },
   "form": {
@@ -11,9 +11,9 @@
     "generateButton": "Generate File",
     "generateAnyway": "Generate Anyway",
     "cancel": "Cancel",
-    "generating": "Generating...",
+    "downloading": "Downloading...",
     "willGenerate": "Will generate {{size}} bytes {{format}} file",
-    "maxSize": "Maximum size: 10 GiB ({{bytes}} bytes)"
+    "maxSize": "Maximum size: 10 TiB ({{bytes}} bytes)"
   },
   "formats": {
     "txt": {
@@ -56,12 +56,6 @@
     "title": "Generation Method",
     "description": "TXT: Zero-filled / CSV: Dummy data generation / PNG: 1x1 transparent / PDF: Comment padding / MP3: Silent audio / MP4: Black screen video"
   },
-  "progress": {
-    "generating": "Generating file...",
-    "completed": "{{percent}}% complete",
-    "cancel": "Cancel",
-    "estimatedTime": "Estimated time remaining: {{time}}"
-  },
   "features": {
     "exactSize": {
       "title": "Exact Size",
@@ -77,7 +71,7 @@
     },
     "formats": {
       "title": "Format Support",
-      "description": "Supports TXT, CSV, PNG, PDF, MP3, MP4 formats"
+      "description": "Supports {{formats}} formats"
     }
   },
   "footer": {
@@ -88,13 +82,21 @@
   },
   "errors": {
     "sizeZero": "File size must be greater than 0",
-    "sizeTooLarge": "File size is limited to 10 GiB",
+    "sizeTooLarge": "File size is limited to 10 TiB",
     "generationFailed": "An error occurred during file generation",
     "invalidSize": "Invalid size value",
     "unsupportedFormat": "Unsupported format: {{format}}"
   },
-  "time": {
-    "lessThanSecond": "less than 1 second",
-    "seconds": "{{count}} seconds"
+  "sizeWarning": {
+    "title": "Large File Warning",
+    "message": "You are about to generate a very large file ({{size}}). This may cause:",
+    "risks": {
+      "memory": "High memory usage that could slow down your device",
+      "performance": "Browser performance degradation",
+      "crash": "Potential browser crash for extremely large files"
+    },
+    "confirmation": "Are you sure you want to continue?",
+    "proceed": "Generate Anyway",
+    "cancel": "Cancel"
   }
 }

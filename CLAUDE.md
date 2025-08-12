@@ -1,12 +1,12 @@
 # Fillr — 詳細設計書
 
-> **キャッチフレーズ**: 必要なサイズのファイルを、安全・瞬時・無制限に — ブラウザ完結だから、プライベート・高速・いつでも利用可能
+> **キャッチフレーズ**: 指定サイズのテスト用ダミーファイルを即座に生成 — ブラウザ完結だから、プライベート・高速・いつでも利用可能
 
 ---
 
 ## 1. 概要
 
-Fillrは、ブラウザだけで動作し、ユーザーが指定した**バイト数ぴったり**のダミーファイルを即座に生成してダウンロードできるサービスです。サーバーを介さないため低コストでスケーラブル。開発者やテスターがファイルサイズ条件のある動作検証やパフォーマンステストを行うためのツールを目指します。
+Fillrは、ブラウザだけで動作し、ユーザーが指定した**バイト数ぴったり**のテスト用ダミーファイルを即座に生成してダウンロードできるサービスです。サーバーを介さないため低コストでスケーラブル。開発者やテスターがファイルサイズ条件のある動作検証やパフォーマンステストを行うためのツールを目指します。
 
 ### 現在の実装状況
 - **言語**: TypeScript完全移行済み
@@ -21,14 +21,14 @@ Fillrは、ブラウザだけで動作し、ユーザーが指定した**バイ�
 
 ### 必須機能 ✅
 - ユーザーがファイルサイズをバイト単位で指定（入力：数値 + 単位B/KB/MB/GB/KiB/MiB/GiB）
-- 拡張子／フォーマット選択（TXT, CSV, PNG, PDF, MP3, MP4）
+- 拡張子／フォーマット選択（TXT, CSV, JSON, PNG, PDF, MP3, MP4）
 - クライアントサイドでファイル生成し即ダウンロード
 - 指定バイト数と**完全一致**するファイルを生成
 - 各フォーマット専用の生成アルゴリズム
 
 ### 拡張機能 ✅
 - 動的アルゴリズム表示（選択したフォーマットに応じて生成方法を説明）
-- 生成中プログレス表示、キャンセル機能
+- ストリーミングダウンロード（WebWorker + StreamSaver.js）
 - リアルタイムバリデーション（フォーム風インラインエラー）
 - 多言語対応（日本語/英語）
 - レスポンシブデザイン
@@ -46,8 +46,8 @@ Fillrは、ブラウザだけで動作し、ユーザーが指定した**バイ�
 1. ユーザーがトップページでファイルサイズと形式を選択
 2. **動的アルゴリズム表示**：選択した形式に応じて生成方法が表示
 3. **リアルタイムバリデーション**：入力値エラーが即座に表示
-4. "ファイル生成" ボタン押下 → 生成開始、進捗表示
-5. 生成完了後、自動ダウンロード開始
+4. "ファイル生成" ボタン押下 → WebWorkerでファイル生成開始
+5. **ストリーミングダウンロード**：生成と同時にブラウザダウンロード開始
 6. **エラーハンドリング**：問題発生時はインラインメッセージで通知
 
 ---
@@ -61,6 +61,8 @@ Build: Vite
 Styling: Tailwind CSS
 i18n: react-i18next
 Icons: Lucide React
+Download: StreamSaver.js
+Generation: WebWorker
 ```
 
 ### ディレクトリ構造
@@ -71,18 +73,15 @@ src/
 │   ├── FormatSelector.tsx
 │   ├── InlineMessage.tsx
 │   ├── LanguageSelector.tsx
-│   ├── ProgressBar.tsx
 │   └── SizeInput.tsx
+├── types/               # 型定義
+│   ├── fileFormats.ts
+│   └── sizeUnits.ts
 ├── utils/               # ユーティリティ
-│   ├── generators/      # ファイル生成器
-│   │   ├── csvGenerator.ts
-│   │   ├── mp3Generator.ts
-│   │   ├── mp4Generator.ts
-│   │   ├── pdfGenerator.ts
-│   │   └── pngGenerator.ts
-│   ├── downloadHandler.ts
-│   ├── fileGenerator.ts
-│   └── sizeParser.ts
+│   ├── sizeParser.ts
+│   └── streamingDownloadHandler.ts
+├── workers/             # WebWorker
+│   └── fileGeneratorWorker.ts
 ├── i18n/               # 国際化
 │   └── locales/
 │       ├── en.json
@@ -91,10 +90,11 @@ src/
 ```
 
 ### 主要モジュール
-- **UI層**: React コンポーネント（フォーム、プログレス、エラー表示）
-- **生成コア**: フォーマット別生成ロジック（utils/generators/）
+- **UI層**: React コンポーネント（フォーム、エラー表示）+ Headless UI
+- **型定義層**: FileFormat、SizeUnit等の Union型定義
+- **WebWorker層**: ファイル生成をメインスレッド外で実行
+- **ストリーミングダウンロード**: StreamSaver.js + WritableStream
 - **バリデーション**: リアルタイム入力検証
-- **ダウンロードハンドラ**: Blob生成、object URL管理
 - **エラーハンドリング**: ErrorBoundary + InlineMessage
 - **国際化**: i18next による多言語対応
 
@@ -143,7 +143,15 @@ const row = `${id},User${id.padStart(4, '0')},user${id}@example.com,555-${phone}
 3. 正確なバイト数まで調整
 ```
 
-### 5.5 MP3/MP4（メタデータ調整）
+### 5.5 JSON ファイル（構造化オブジェクト生成）
+```typescript
+// JSON構造
+1. 基本オブジェクト構造を作成
+2. データ配列でサイズ調整
+3. 最後の要素で正確なバイト数に調整
+```
+
+### 5.6 MP3/MP4（メタデータ調整）
 - **MP3**: 無音WAVをMP3エンコード、ID3タグで調整
 - **MP4**: 1x1黒画面動画、メタデータボックスで調整
 
@@ -175,7 +183,13 @@ const getValidationError = useCallback(() => {
 - エラータイプ別カラーリング（赤：エラー、オレンジ：警告、緑：成功）
 - アイコン付きでわかりやすい表示
 
-### 6.4 ヘッダー機能
+### 6.4 Headless UI コンポーネント
+- **FormatSelector**: Listbox による選択UI
+- **LanguageSelector**: RadioGroup による言語切り替え
+- **ProgressBar**: 安定化されたプログレス表示とキャンセルボタン
+- **InlineMessage**: Button コンポーネント使用
+
+### 6.5 ヘッダー機能
 - **GitHubアイコン**: リポジトリへの直接アクセス
 - **言語選択**: 国旗なしのシンプルデザイン
 
@@ -190,9 +204,6 @@ const getValidationError = useCallback(() => {
 
 ### 7.2 エラー表示方式
 ```typescript
-// 削除された機能：大容量警告
-// 現在：10GiB制限でハードストップ
-
 // エラーメッセージ簡素化
 showInlineError(`生成エラー: ${error.message}`);
 ```
@@ -207,7 +218,7 @@ showInlineError(`生成エラー: ${error.message}`);
 - 大容量ファイル対応
 
 ### 8.2 レンダリング最適化
-- useCallback による関数メモ化
+- 適切な状態管理（useCallbackクロージャー問題の解決）
 - 必要最小限の状態更新
 - エラー発生時の安全な状態復帰
 
@@ -313,8 +324,8 @@ const { t } = useTranslation();
 ## 14. 制限事項
 
 ### 14.1 技術的制限
-- **最大ファイルサイズ**: 10 GiB（ブラウザメモリ依存）
-- **対応フォーマット**: 6種類（TXT, CSV, PNG, PDF, MP3, MP4）
+- **最大ファイルサイズ**: 10 TiB（ブラウザメモリ依存）
+- **対応フォーマット**: 7種類（TXT, CSV, JSON, PNG, PDF, MP3, MP4）
 - **ブラウザ依存**: モダンブラウザのみ
 
 ### 14.2 パフォーマンス制限
@@ -386,7 +397,22 @@ function generateByChunks(size: number, chunkSize = 4 * 1024 * 1024) {
 - **一貫性の維持**: UIデザイン、コーディングスタイルは既存ファイルを参照してズレを最小限に抑える
 - **段階的実装**: 大きな変更は小さく分割し、各段階で動作確認を行う
 
-### 17.2 設計一貫性
+### 17.2 型安全性設計
+```typescript
+// Union型での簡厷な型定義
+export const SUPPORTED_FORMATS = ['txt', 'csv', 'json', 'png', 'pdf', 'mp3', 'mp4'] as const;
+export type FileFormat = typeof SUPPORTED_FORMATS[number];
+
+// 型ガード関数
+export function isValidSizeUnit(unit: string): unit is SizeUnit {
+  return (SUPPORTED_SIZE_UNITS as readonly string[]).includes(unit);
+}
+
+// 型アサーションでの安全な変換
+onChange={(e) => onUnitChange(e.target.value as SizeUnit)}
+```
+
+### 17.3 設計一貫性
 ```typescript
 // 既存パターンに従う例
 // ✅ Good: 既存のuseCallbackパターンに従う
@@ -401,21 +427,24 @@ const handleSizeValueChange = useCallback((value: string) => {
 const handleChange = (value) => { /* 新しい処理方式 */ };
 ```
 - generatorに関してはminfilesizeを極力下げるようなアルゴリズムを生成すること
+- AbortSignalを各生成関数に传送し、適切なタイミングでキャンセルチェックを実行
 
-### 17.3 UI/UXデザイン指針
+### 17.4 UI/UXデザイン指針
+- **Headless UI 使用**: アクセシビリティと一貫性を保つためListbox, RadioGroup, Buttonを積極的に使用
 - **既存コンポーネントの踏襲**: InlineMessage、SizeInput等の既存デザインパターンを維持
 - **Tailwind CSS**: 既存のクラス構成とカラーパレットに従う
 - **レスポンシブ対応**: 既存の`max-w-2xl mx-auto`等のレイアウトパターンを継承
+- **プログレスバー安定化**: デバウンシングとスロットリングで数値とUIの両方を安定化
 - useEffectは極力使わない、使う理由は明記すること
 
-### 17.4 ドキュメント更新義務
+### 17.5 ドキュメント更新義務
 大きな変化があった場合の即座更新対象：
 1. **CLAUDE.md**: 設計仕様・アーキテクチャ変更
 2. **README.md / README.ja.md**: 機能追加・削除、使用方法変更
 3. **CONTRIBUTING.md / CONTRIBUTING.ja.md**: 開発環境・プロセス変更
 4. **i18n files**: UI文言・メッセージ変更
 
-### 17.5 変更管理プロセス
+### 17.6 変更管理プロセス
 ```bash
 # 変更前: 現在の動作確認
 npm run dev
@@ -432,14 +461,14 @@ npm run lint
 # 4. 不要なコード・機能があれば完全削除
 ```
 
-### 17.6 rollback指針
+### 17.7 rollback指針
 不要機能を作成してしまった場合：
 1. **完全削除**: 関連するすべてのファイル、import、型定義を削除
 2. **依存関係クリーンアップ**: package.jsonの不要な依存関係も削除
 3. **コミット整理**: 必要に応じてコミット履歴を整理
 4. **ドキュメント同期**: 削除した機能に関する記述をドキュメントからも削除
 
-### 17.7 既存ファイル参照による一貫性確保
+### 17.8 既存ファイル参照による一貫性確保
 新しい実装を行う際の参照優先順位：
 1. **同種の既存コンポーネント**: 同じ目的のコンポーネントのパターンを踏襲
 2. **App.tsx**: 状態管理・イベントハンドリングのパターン

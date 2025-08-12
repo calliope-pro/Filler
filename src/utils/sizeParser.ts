@@ -1,7 +1,7 @@
 import { FileFormat } from '../types/fileFormats';
 import { SizeUnit, SIZE_MULTIPLIERS } from '../types/sizeUnits';
 
-const MAX_FILE_SIZE = 10 * 1024 * 1024 * 1024; // 10 GiB
+const MAX_FILE_SIZE = 10 * 1024 * 1024 * 1024 * 1024; // 10 TiB
 
 // 各ファイル形式の技術的最小サイズ (bytes)
 const MIN_FILE_SIZES: Record<FileFormat, number> = {
@@ -55,7 +55,7 @@ export function formatBytes(bytes: number): string {
 }
 
 export function getSupportedUnits(): readonly SizeUnit[] {
-  return ['B', 'KB', 'MB', 'GB', 'KiB', 'MiB', 'GiB'] as const;
+  return ['B', 'KB', 'MB', 'GB', 'TB', 'KiB', 'MiB', 'GiB', 'TiB'] as const;
 }
 
 export function getMaxFileSize(): number {

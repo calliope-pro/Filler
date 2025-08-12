@@ -1,14 +1,13 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SizeInput } from './components/SizeInput.tsx';
 import { FormatSelector } from './components/FormatSelector.tsx';
-import { ProgressBar } from './components/ProgressBar.tsx';
 import { LanguageSelector } from './components/LanguageSelector.tsx';
 import { InlineMessage, MessageType } from './components/InlineMessage.tsx';
+import SizeWarningModal from './components/SizeWarningModal.tsx';
 import { parseSizeInput, getMaxFileSize, getMinFileSize } from './utils/sizeParser.ts';
-import { generateFile, getDefaultFilename } from './utils/fileGenerator.ts';
-import { downloadBlob, validateBrowserSupport } from './utils/downloadHandler.ts';
-import { FileFormat, DEFAULT_FILE_FORMAT } from './types/fileFormats';
+import { StreamingDownloadManager, validateBrowserSupport } from './utils/streamingDownloadHandler.ts';
+import { FileFormat, DEFAULT_FILE_FORMAT, SUPPORTED_FORMATS } from './types/fileFormats';
 import { SizeUnit, DEFAULT_SIZE_UNIT, SIZE_MULTIPLIERS } from './types/sizeUnits';
 import './i18n/index.ts';
 
@@ -27,9 +26,8 @@ export default function App(): JSX.Element {
   const [sizeUnit, setSizeUnit] = useState<SizeUnit>(DEFAULT_SIZE_UNIT);
   const [format, setFormat] = useState<FileFormat>(DEFAULT_FILE_FORMAT);
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
-  const [progress, setProgress] = useState<number>(0);
-  const [estimatedTime, setEstimatedTime] = useState<number | null>(null);
   const [inlineMessage, setInlineMessage] = useState<InlineMessageState | null>(null);
+  const [showSizeWarning, setShowSizeWarning] = useState<boolean>(false);
 
   // Safe size value setter with validation
   const handleSizeValueChange = useCallback((value: string) => {
@@ -39,7 +37,6 @@ export default function App(): JSX.Element {
     }
   }, []);
   
-  const abortControllerRef = useRef<AbortController | null>(null);
   const maxFileSize = getMaxFileSize();
 
   // Helper functions for inline messages
@@ -52,74 +49,29 @@ export default function App(): JSX.Element {
 
 
 
-  const continueGeneration = useCallback(async (bytes: number) => {
+  const continueGeneration = async (bytes: number) => {
     setIsGenerating(true);
-    setProgress(0);
-    setEstimatedTime(null);
-    const startTime = Date.now();
     
-    // Create abort controller for cancellation
-    abortControllerRef.current = new AbortController();
-
-    // Track progress updates timing
-    let lastProgressUpdate = 0;
-
     try {
-      const blob = await generateFile(format, bytes, (progress) => {
-        const now = Date.now();
-        
-        // Throttle progress updates to avoid excessive re-renders
-        if (now - lastProgressUpdate > 100) {
-          setProgress(progress);
-          
-          // Calculate estimated time based on actual progress
-          if (progress > 0.01) {
-            const elapsed = (now - startTime) / 1000;
-            const estimatedTotal = elapsed / progress;
-            const remaining = Math.max(0, estimatedTotal - elapsed);
-            setEstimatedTime(remaining);
-          }
-          
-          lastProgressUpdate = now;
+      const streamingManager = new StreamingDownloadManager();
+      await streamingManager.startDownload({
+        format,
+        size: bytes,
+        onError: (error: string) => {
+          showInlineError(`生成エラー: ${error}`);
+          setIsGenerating(false);
         }
-      }, abortControllerRef.current?.signal);
+      });
       
-      // Final progress update
-      setProgress(1);
-      setEstimatedTime(0);
-
-      // Verify file size
-      if (blob.size !== bytes) {
-        console.warn(`Generated file size (${blob.size}) doesn't match target (${bytes})`);
-      }
-
-      const finalFilename = getDefaultFilename(format, bytes);
-      downloadBlob(blob, finalFilename);
-      
-      
-      // Reset after successful generation
-      setTimeout(() => {
-        setIsGenerating(false);
-        setProgress(0);
-        setEstimatedTime(null);
-      }, 1000);
+      // Reset after successful download
+      setIsGenerating(false);
       
     } catch (err) {
       const error = err as Error;
-      
-      // Handle abort specifically
-      if (error.name === 'AbortError') {
-        // Generation was cancelled, just clean up state
-        console.log('File generation was cancelled');
-      } else {
-        showInlineError(`生成エラー: ${error.message}`);
-      }
-      
+      showInlineError(`生成エラー: ${error.message}`);
       setIsGenerating(false);
-      setProgress(0);
-      setEstimatedTime(null);
     }
-  }, [format, showInlineError, t]);
+  };
 
   // Safe parsing for render calculations - moved before validateInput
   const getSafeParsedSize = useCallback(() => {
@@ -179,17 +131,40 @@ export default function App(): JSX.Element {
     }
   }, [sizeValue, sizeUnit, maxFileSize, t]);
 
-  const handleGenerate = useCallback(async () => {
+  const handleGenerate = async () => {
     const validationError = validateForm();
     if (validationError) {
       showInlineError(validationError);
       return;
     }
 
-    proceedWithGeneration();
-  }, [validateForm, showInlineError]);
+    // Check if file size is 1GB or larger
+    try {
+      const bytes = parseSizeInput(sizeValue, sizeUnit);
+      const oneGB = 1 * SIZE_MULTIPLIERS.GB;
+      
+      if (bytes >= oneGB) {
+        setShowSizeWarning(true);
+        return;
+      }
+    } catch (err) {
+      showInlineError(t('errors.invalidSize'));
+      return;
+    }
 
-  const proceedWithGeneration = useCallback(async () => {
+    proceedWithGeneration();
+  };
+
+  const handleSizeWarningConfirm = () => {
+    setShowSizeWarning(false);
+    proceedWithGeneration();
+  };
+
+  const handleSizeWarningCancel = () => {
+    setShowSizeWarning(false);
+  };
+
+  const proceedWithGeneration = async () => {
     try {
       validateBrowserSupport();
       
@@ -204,20 +179,11 @@ export default function App(): JSX.Element {
       
       showInlineError(errorMessage);
     }
-  }, [sizeValue, sizeUnit, showInlineError, continueGeneration, t]);
+  };
 
-  const handleCancel = useCallback(() => {
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
-    }
-    setIsGenerating(false);
-    setProgress(0);
-    setEstimatedTime(null);
-  }, []);
 
 
   const totalBytes = getSafeParsedSize();
-  const currentBytes = Math.max(0, totalBytes * progress);
   
   // Check for validation errors to display
   const getValidationError = useCallback(() => {
@@ -361,29 +327,33 @@ export default function App(): JSX.Element {
                   : 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl'
               }`}
             >
-              {isGenerating ? t('form.generating') : t('form.generateButton')}
+              {isGenerating ? t('form.downloading') : t('form.generateButton')}
             </button>
 
             {!isGenerating && sizeValue && totalBytes > 0 && !inlineMessage && !validationError && (
-              <p className="text-sm text-gray-600 text-center">
-                {t('form.willGenerate', { 
-                  size: totalBytes.toLocaleString(), 
-                  format: format.toUpperCase() 
-                })}
-              </p>
+              <div className="text-sm text-gray-600 text-center space-y-1">
+                <p>
+                  {t('form.willGenerate', { 
+                    size: totalBytes.toLocaleString(), 
+                    format: format.toUpperCase() 
+                  })}
+                </p>
+                <p className="text-xs text-gray-500">
+                  📁 fillr-{format.toUpperCase()}-{totalBytes}bytes.{format}
+                </p>
+              </div>
             )}
           </div>
 
-          {/* Progress Bar */}
-          <ProgressBar
-            isGenerating={isGenerating}
-            progress={progress}
-            currentBytes={currentBytes}
-            totalBytes={totalBytes}
-            estimatedTimeRemaining={estimatedTime}
-            onCancel={handleCancel}
-          />
         </div>
+
+        {/* Size Warning Modal */}
+        <SizeWarningModal
+          isOpen={showSizeWarning}
+          onClose={handleSizeWarningCancel}
+          onConfirm={handleSizeWarningConfirm}
+          fileSize={`${sizeValue} ${sizeUnit}`}
+        />
 
         {/* Features */}
         <div className="mt-8 grid md:grid-cols-2 gap-4">
@@ -411,7 +381,9 @@ export default function App(): JSX.Element {
           <div className="bg-white rounded-lg p-4 shadow-sm">
             <h3 className="font-semibold text-gray-900 mb-2">📱 {t('features.formats.title')}</h3>
             <p className="text-sm text-gray-600">
-              {t('features.formats.description')}
+              {t('features.formats.description', { 
+                formats: SUPPORTED_FORMATS.map(f => f.toUpperCase()).join(', ')
+              })}
             </p>
           </div>
         </div>
