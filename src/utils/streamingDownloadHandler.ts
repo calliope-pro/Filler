@@ -126,7 +126,7 @@ export class StreamingDownloadManager {
     const extension = FILE_EXTENSIONS[format]!;
     // Add timestamp to ensure unique URLs and prevent caching
     const timestamp = Date.now();
-    return `fillr-${format.toUpperCase()}-${size}bytes-${timestamp}.${extension}`;
+    return `simulacra-${format.toUpperCase()}-${size}bytes-${timestamp}.${extension}`;
   }
 
 

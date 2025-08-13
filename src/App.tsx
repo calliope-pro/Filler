@@ -339,7 +339,7 @@ export default function App(): JSX.Element {
                   })}
                 </p>
                 <p className="text-xs text-gray-500">
-                  📁 fillr-{format.toUpperCase()}-{totalBytes}bytes.{format}
+                  📁 simulacra-{format.toUpperCase()}-{totalBytes}bytes.{format}
                 </p>
               </div>
             )}
